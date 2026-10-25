@@ -21,7 +21,7 @@ app.post('/ask', async (req, res) => {
             try {
                 attempts++;
                 response = await ai.models.generateContent({
-                    model: 'gemini-flash-latest', // <-- En güncel ve kararlı takma ad
+                    model: 'gemini-2.0-flash', // <-- Kararlı ve güncel sürüm
                     contents: userMessage,
                     config: {
                         systemInstruction: "Sen Roblox oyunundaki akıllı bir NPC'sin. Oyuncuların sorularına kısa, eğlenceli ve oyunun temasına uygun Türkçe cevaplar ver."
@@ -30,7 +30,7 @@ app.post('/ask', async (req, res) => {
                 success = true;
             } catch (err) {
                 if (attempts >= 3) throw err;
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Bekleme süresini biraz artırdık
             }
         }
 
