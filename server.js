@@ -17,11 +17,12 @@ app.post('/ask', async (req, res) => {
         let attempts = 0;
         let success = false;
 
-        while (attempts < 3 && !success) {
+        // Yoğunluk (503) durumunda tekrar deneme mekanizması
+        while (attempts < 4 && !success) {
             try {
                 attempts++;
                 response = await ai.models.generateContent({
-                    model: 'gemini-2.0-flash', // <-- Kararlı ve güncel sürüm
+                    model: 'gemini-3.8-flash', // <-- Resmi güncel model
                     contents: userMessage,
                     config: {
                         systemInstruction: "Sen Roblox oyunundaki akıllı bir NPC'sin. Oyuncuların sorularına kısa, eğlenceli ve oyunun temasına uygun Türkçe cevaplar ver."
@@ -29,15 +30,17 @@ app.post('/ask', async (req, res) => {
                 });
                 success = true;
             } catch (err) {
-                if (attempts >= 3) throw err;
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Bekleme süresini biraz artırdık
+                console.warn(`Deneme ${attempts} başarısız oldu, tekrar deneniyor...`, err.message);
+                if (attempts >= 4) throw err;
+                // Her deneme arasında 2 saniye bekleyerek yoğunluk filtresini aşalım
+                await new Promise(resolve => setTimeout(resolve, 2000));
             }
         }
 
         res.json({ reply: response.text });
     } catch (error) {
         console.error("API Hatası:", error);
-        res.status(500).json({ error: "Yapay zeka yanıt oluştururken bir hata oluştu." });
+        res.status(500).json({ error: "Yapay zeka şu an çok yoğun, lütfen biraz sonra tekrar dene." });
     }
 });
 
