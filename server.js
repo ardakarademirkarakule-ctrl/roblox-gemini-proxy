@@ -21,7 +21,7 @@ app.post('/ask', async (req, res) => {
             try {
                 attempts++;
                 response = await ai.models.generateContent({
-                    model: 'gemini-1.5-flash', // <-- En stabil ve kararlı model
+                    model: 'gemini-flash-latest', // <-- En güncel ve kararlı takma ad
                     contents: userMessage,
                     config: {
                         systemInstruction: "Sen Roblox oyunundaki akıllı bir NPC'sin. Oyuncuların sorularına kısa, eğlenceli ve oyunun temasına uygun Türkçe cevaplar ver."
