@@ -20,7 +20,7 @@ app.post('/ask', async (req, res) => {
             model: 'gemini-3.1-flash-lite', // <-- Yoğunluktan etkilenmeyen daha hafif lite sürüm
             contents: userMessage,
             config: {
-                systemInstruction: "Sen Roblox oyunundaki akıllı bir NPC'sin. Oyuncuların sorularına kısa, eğlenceli ve oyunun temasına uygun Türkçe cevaplar ver. Maksimum 1-2 cümle olsun."
+                systemInstruction: "Sen bir roblox oyunundaki bir yapay zekasin sorularina cevap verebilirsin."
             }
         });
         
