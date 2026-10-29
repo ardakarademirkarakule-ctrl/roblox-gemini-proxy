@@ -15,8 +15,8 @@ app.post('/ask', async (req, res) => {
 
         console.log("Gelen soru:", userMessage);
 
-        // Gemini'ye istek atalım
-        const response = await ai.models.generateContent({
+        // Gemini isteğini bir zaman aşımı (timeout) sarmalına alalım
+        const aiPromise = ai.models.generateContent({
             model: 'gemini-3.8-flash',
             contents: userMessage,
             config: {
@@ -24,12 +24,20 @@ app.post('/ask', async (req, res) => {
             }
         });
 
-        console.log("Gemini'den yanıt alındı.");
+        // 7 saniye içinde cevap gelmezse patlat
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('AI Yanıt Süresi Aşımı (Timeout)')), 7000)
+        );
+
+        const response = await Promise.race([aiPromise, timeoutPromise]);
+
+        console.log("Gemini'den yanıt başarıyla alındı.");
         res.json({ reply: response.text });
 
     } catch (error) {
-        console.error("Sunucu Kritik Hatası:", error);
-        res.status(500).json({ reply: "Hata oluştu, daha sonra dene!" });
+        console.error("Sunucu Kritik Hatası:", error.message);
+        // Oyunda asılı kalmasın diye direkt bir metin dönüyoruz
+        res.status(500).json({ reply: "Agalar şu an kafam çok karışık, sonra sor!" });
     }
 });
 
