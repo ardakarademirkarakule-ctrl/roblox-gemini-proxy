@@ -17,13 +17,13 @@ app.post('/ask', async (req, res) => {
 
         // Gemini isteğini bir zaman aşımı (timeout) sarmalına alalım
         const aiPromise = ai.models.generateContent({
-            model: 'gemini-1.5-flash', // <-- Yoğunluk yaşamayan daha kararlı hafif model
+            model: 'gemini-3.5-flash-lite', // <-- Hafif ve yoğunluk dostu model
             contents: userMessage,
             config: {
                 systemInstruction: "Sen Roblox oyunundaki akıllı bir NPC'sin. Oyuncuların sorularına kısa, eğlenceli ve oyunun temasına uygun Türkçe cevaplar ver. Maksimum 1-2 cümle olsun."
             }
         });
-
+        
         // 7 saniye içinde cevap gelmezse patlat
         const timeoutPromise = new Promise((_, reject) => 
             setTimeout(() => reject(new Error('AI Yanıt Süresi Aşımı (Timeout)')), 7000)
